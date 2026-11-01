@@ -2,6 +2,8 @@ raw_malicious_phish.csv
 malicious_phish.csv.zip
 malicious_phish.csv
 clean_data.csv
+X_ngram.csv
+X_tabular.csv
 
 .DS_Store
 

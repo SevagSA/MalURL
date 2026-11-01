@@ -1,10 +1,11 @@
+import joblib
 import pandas as pd
 
 from pipeline.features import get_features
 from sklearn.feature_extraction.text import TfidfVectorizer
 
 
-def extract_features_pipeline(df_path):
+def extract_features_pipeline(df_path, X_tabular_path, X_ngram_path):
     df = pd.read_csv(df_path)
 
     feature_list = [get_features(u) for u in df["url"]]
@@ -17,6 +18,6 @@ def extract_features_pipeline(df_path):
         min_df=3, 
         max_features=300_000
     )
-    X_ngram = vectorizer.fit_transform(df["url"])
 
-    return X_tabular, X_ngram, df["type"].values
+    X_tabular.to_csv(X_tabular_path, index=False)
+    joblib.dump(vectorizer, X_ngram_path)
