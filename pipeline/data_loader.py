@@ -1,18 +1,12 @@
 import os
-import re
 import shutil
 import kagglehub
 import pandas as pd
 
+from utils import clean_url
+
 dir_path = "data/"
 raw_file_path = "data/raw_malicious_phish.csv"
-
-def _clean_url(url):
-    """Normalizes URL and removes protocols and www."""
-    url = url.strip().lower()
-    url = re.sub(r"^[a-z]+://", "", url)
-    url = re.sub(r"^www\.", "", url)
-    return url.rstrip("/")
 
 
 def _load_data_from_kaggle():
@@ -29,7 +23,7 @@ def _load_data_from_kaggle():
     print(f"Dataset saved to: {raw_file_path}")
 
 
-def load_and_clean_dataset():
+def load_and_clean_dataset(clean_data_path):
     _load_data_from_kaggle()
     df = pd.read_csv(raw_file_path)
 
@@ -58,13 +52,7 @@ def load_and_clean_dataset():
         clean the urls by removing the protocol."
         """
     )
-    df['url'] = df['url'].apply(_clean_url)
+    df['url'] = df['url'].apply(clean_url)
 
-    return df
-
-if __name__ == "__main__":
-    clean_data_path = "data/clean_data.csv"
-    if not os.path.isfile(clean_data_path):
-        df_clean = load_and_clean_dataset()
-        df_clean.to_csv(clean_data_path)
-        print(df_clean)
+    df.to_csv(clean_data_path)
+    print(f"Data loaded and cleaned: {df}")
