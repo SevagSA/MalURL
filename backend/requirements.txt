@@ -2,3 +2,5 @@
 # then rebuild: docker compose up -d --build
 fastapi==0.142.2
 uvicorn==0.54.0
+scikit-learn==1.9.1
+joblib
