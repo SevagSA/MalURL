@@ -95,7 +95,45 @@ Once `ml/models/model.joblib` exists, build and start the services:
 ```bash
 docker compose up --build
 ```
+### MITM Proxy Test
 
+The mitmproxy addon is located at `proxy/malurl_guard.py`.
+
+For local browser testing, configure Firefox to use the proxy:
+
+```text
+HTTP Proxy: 127.0.0.1
+Port: 8080
+```
+
+If port `8080` is already in use, start the stack with another host port:
+
+```bash
+PROXY_PORT=8082 docker compose up --build
+```
+
+Then configure Firefox to use:
+
+```text
+HTTP Proxy: 127.0.0.1
+Port: 8082
+```
+
+Import `certs/mitmproxy-ca-cert.pem` into Firefox and trust it to identify websites.
+
+To verify interception, open an HTTPS website and check the proxy logs:
+
+```bash
+docker compose logs proxy --tail=30
+```
+
+Expected output:
+
+```text
+Protocol: https
+Host: example.com
+URL: https://example.com/
+```
 ### Services & Ports
 * **Backend API (`http://localhost:8000`):** FastAPI service loading `/app/ml/models/model.joblib` (interactive docs at `http://localhost:8000/docs`).
 * **Proxy (`localhost:8080`):** `mitmproxy` instance intercepting HTTP/HTTPS traffic and querying `http://backend:8000/analyze`.
