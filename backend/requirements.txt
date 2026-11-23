@@ -1,0 +1,4 @@
+# Add what the backend needs (e.g. scikit-learn==1.9.1 for the model),
+# then rebuild: docker compose up -d --build
+fastapi==0.142.2
+uvicorn==0.54.0

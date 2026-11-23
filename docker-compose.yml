@@ -1,0 +1,43 @@
+# MalURL Guard - Docker lab skeleton  (owner: Marcus)
+#
+#   user (Firefox) --> proxy (mitmproxy) --> internet
+#                         |
+#                         v
+#                      backend (FastAPI)
+#
+# Start:   docker compose up --build
+# Browser: http://localhost:5800  (Firefox proxy setting: host "proxy", port 8080)
+# Backend: http://localhost:8000/docs
+#
+# Each service has a placeholder that its owner replaces.
+
+services:
+  # The "employee laptop": Firefox you open in a browser tab.
+  user:
+    image: jlesage/firefox:latest
+    ports: ["${USER_PORT:-5800}:5800"]
+    volumes: ["./firefox-profile:/config"]   # keeps settings + imported CA
+    shm_size: "2gb"
+    depends_on: [proxy]
+
+  # The gateway. Owner: Ipek (addon in proxy/).
+  proxy:
+    image: #mitmproxy/mitmproxy:11.0.0
+    command: #mitmdump -s /addon/malurl_guard.py --set connection_strategy=lazy --listen-port 8080
+    ports: #["${PROXY_PORT:-8080}:8080"]
+    volumes:
+      #- ./proxy:/addon:ro
+      #- ./certs:/home/mitmproxy/.mitmproxy   # your own CA - never commit or share
+    environment:
+      BACKEND_URL: #http://backend:8000/analyze
+    depends_on: #[backend]
+
+  # The analysis API. Owners: Sevag (backend/), Sergei (model in pipeline/).
+  backend:
+    build: #./backend
+    ports: #["${BACKEND_PORT:-8000}:8000"]
+    volumes:
+      #- ./backend:/app/backend
+      #- ./pipeline:/app/pipeline
+      #- ./utils.py:/app/utils.py
+      #- ./env:/app/env          # trained models (*.pkl, never commit)
