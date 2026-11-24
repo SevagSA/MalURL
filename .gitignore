@@ -228,3 +228,14 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+# ---- Merged from the old malurl-guard repo ----
+data/raw/*
+data/processed/*
+*.pkl
+*.joblib
+.tranco/
+
+# Docker lab (never commit)
+certs/
+firefox-profile/
+captures/
